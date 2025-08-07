@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cor-bege: #f5f5dc;
+  --cor-blue: #2d84cc;
+  --cor-gray: #708090;
+  --cor-black: #0f0f0f;
+  
+  --cor-fundo: var(--cor-gray);
+  --cor-texto: var(--cor-black);
+  --cor-destaque: var(--cor-blue);
+  --cor-secundaria: var(--cor-bege);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
