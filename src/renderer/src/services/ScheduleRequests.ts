@@ -26,7 +26,7 @@ export const buscarSalasDisponiveisPorHorario = async (
 }
 
 export const handleConfirmAgendamento = async (agendamento: {
-  salaId: number
+  salaId: string
   responsavel: string
   horarios: {
     data: string

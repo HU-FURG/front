@@ -1,22 +1,40 @@
 /* eslint-disable prettier/prettier */
-import { Routes, Route } from 'react-router-dom'
+import { ReactElement } from 'react'
 import Scheduling from '@renderer/routers/Scheduling'
 import Rooms from '@renderer/routers/Rooms'
 import Login from '@renderer/routers/Login'
 import Dashboard from '@renderer/routers/Dashboard'
 
-function Main(): React.JSX.Element {
+type Page = 'scheduling' | 'rooms' | 'login' | 'dashboard' | 'home'
+
+interface MainProps {
+  page: Page
+}
+
+function Main({ page }: MainProps): React.JSX.Element {
+
+  function renderPage(): ReactElement {
+    switch (page) {
+      case 'scheduling':
+        return <Scheduling />
+      case 'rooms':
+        return <Rooms />
+      case 'login':
+        return <Login />
+      case 'dashboard':
+        return <Dashboard />
+      default:
+        return <div>Selecione uma opção no menu.</div>
+    }
+  }
+
   return (
-    <main className="flex-1 p-1 bg-gray-50 min-h-full">
-      <Routes>
-        <Route path="/scheduling" element={<Scheduling />} />
-        <Route path="/rooms" element={<Rooms />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="*" element={<div>Selecione uma opção no menu.</div>} />
-      </Routes>
+    <main className="flex-1 p-1 bg-gray-50 min-h-full flex">
+      {/* Conteúdo principal */}
+      <div className="flex-1 p-4">{renderPage()}</div>
     </main>
   )
 }
 
 export default Main
+

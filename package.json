@@ -17,18 +17,38 @@
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "npm run build && electron-builder --dir",
     "build:win": "npm run build && electron-builder --win",
+    "build:win-publish": "npm run build && electron-builder --win --publish always",
     "build:mac": "electron-vite build && electron-builder --mac",
     "build:linux": "electron-vite build && electron-builder --linux"
   },
+  "repository": "https://github.com/HU-FURG/front.git",
+  "build": {
+  "appId": "br.furg.hu-front",
+  "productName": "HU App",
+  "win": {
+    "target": "nsis"
+  },
+  "directories": {
+    "output": "dist"
+  },
+  "publish": [
+    {
+      "provider": "github",
+      "owner": "HU-FURG",
+      "repo": "front",
+      "releaseType": "release"
+    }
+  ]
+},
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
     "@headlessui/react": "^2.2.4",
+    "@parcel/watcher": "^2.5.1",
     "@tailwindcss/cli": "^4.1.8",
     "@tailwindcss/postcss": "^4.1.8",
     "@tailwindcss/vite": "^4.1.8",
     "axios": "^1.9.0",
-    "electron-updater": "^6.3.9",
     "lucide-react": "^0.511.0",
     "react-datepicker": "^8.4.0",
     "react-router-dom": "^7.6.2"
@@ -42,8 +62,9 @@
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.21",
-    "electron": "^35.1.5",
+    "electron": "^35.7.4",
     "electron-builder": "^25.1.8",
+    "electron-updater": "^6.6.2",
     "electron-vite": "^3.1.0",
     "eslint": "^9.24.0",
     "eslint-plugin-react": "^7.37.5",

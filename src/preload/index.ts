@@ -1,12 +1,11 @@
-import { contextBridge } from 'electron'
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 
-// Custom APIs for renderer
+// APIs customizadas para o renderer
 const api = {}
 
-// Use `contextBridge` APIs to expose Electron APIs to
-// renderer only if context isolation is enabled, otherwise
-// just add to the DOM global.
+// Expondo APIs padrão do electron-toolkit
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI)
@@ -15,8 +14,15 @@ if (process.contextIsolated) {
     console.error(error)
   }
 } else {
-  // @ts-ignore (define in dts)
+  // @ts-ignore
   window.electron = electronAPI
-  // @ts-ignore (define in dts)
+  // @ts-ignore
   window.api = api
 }
+
+// Expor listener para mensagens de update
+contextBridge.exposeInMainWorld('electronAPI', {
+  onUpdateMessage: (callback: (message: string) => void) => {
+    ipcRenderer.on('update-message', (_, message) => callback(message))
+  }
+})
