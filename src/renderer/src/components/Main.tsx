@@ -29,7 +29,8 @@ function Main({ page }: MainProps): React.JSX.Element {
   }
 
   return (
-    <main className="flex-1 p-1 bg-gray-50 min-h-full flex">
+    // <main className="flex-1 p-1 bg-gray-50 min-h-full flex">
+    <main className="flex-1 p-1 bg-black min-h-full flex">
       {/* Conteúdo principal */}
       <div className="flex-1 p-4">{renderPage()}</div>
     </main>
