@@ -23,23 +23,23 @@
   },
   "repository": "https://github.com/HU-FURG/front.git",
   "build": {
-  "appId": "br.furg.hu-front",
-  "productName": "HU App",
-  "win": {
-    "target": "nsis"
+    "appId": "br.furg.hu-front",
+    "productName": "HU App",
+    "win": {
+      "target": "nsis"
+    },
+    "directories": {
+      "output": "dist"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "HU-FURG",
+        "repo": "front",
+        "releaseType": "release"
+      }
+    ]
   },
-  "directories": {
-    "output": "dist"
-  },
-  "publish": [
-    {
-      "provider": "github",
-      "owner": "HU-FURG",
-      "repo": "front",
-      "releaseType": "release"
-    }
-  ]
-},
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
@@ -49,6 +49,8 @@
     "@tailwindcss/postcss": "^4.1.8",
     "@tailwindcss/vite": "^4.1.8",
     "axios": "^1.9.0",
+    "decode": "^0.3.0",
+    "jwt-decode": "^4.0.0",
     "lucide-react": "^0.511.0",
     "react-datepicker": "^8.4.0",
     "react-router-dom": "^7.6.2"

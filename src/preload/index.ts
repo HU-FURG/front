@@ -24,5 +24,7 @@ if (process.contextIsolated) {
 contextBridge.exposeInMainWorld('electronAPI', {
   onUpdateMessage: (callback: (message: string) => void) => {
     ipcRenderer.on('update-message', (_, message) => callback(message))
-  }
+  },
+  checkForUpdates: () => ipcRenderer.invoke('check-for-updates'),
+  getAppVersion: () => ipcRenderer.invoke('get-app-version')
 })

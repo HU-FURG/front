@@ -2,7 +2,6 @@
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
 import { autoUpdater } from 'electron-updater'
 
 let mainWindow: BrowserWindow | null = null
@@ -24,7 +23,7 @@ function createWindow(): void {
     minHeight: 670,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    ...(process.platform === 'linux' ? {} : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
@@ -47,6 +46,45 @@ function createWindow(): void {
   }
 }
 
+ipcMain.handle('get-app-version', () => {
+  return app.getVersion()
+})
+
+ipcMain.handle('check-for-updates', () => {
+  return new Promise<void>((resolve, reject) => {
+    function cleanup() {
+      autoUpdater.removeListener('error', onError)
+      autoUpdater.removeListener('update-not-available', onUpdateNotAvailable)
+      autoUpdater.removeListener('update-downloaded', onUpdateDownloaded)
+    }
+
+    function onError(err: Error) {
+      cleanup()
+      sendStatusToWindow(`Erro no update: ${err.message || 'desconhecido'}`)
+      reject(err)
+    }
+
+    function onUpdateNotAvailable() {
+      cleanup()
+      sendStatusToWindow(`Nenhuma atualização disponível. Versão atual: ${app.getVersion()}`)
+      resolve()
+    }
+
+    function onUpdateDownloaded() {
+      cleanup()
+      sendStatusToWindow(`Atualização baixada. Será instalada ao sair do app.`)
+      resolve()
+    }
+
+    autoUpdater.once('error', onError)
+    autoUpdater.once('update-not-available', onUpdateNotAvailable)
+    autoUpdater.once('update-downloaded', onUpdateDownloaded)
+
+    sendStatusToWindow(`Verificando atualizações... Versão atual: ${app.getVersion()}`)
+    autoUpdater.checkForUpdates()
+  })
+})
+
 app.whenReady().then(() => {
   electronApp.setAppUserModelId('com.electron')
 
@@ -59,29 +97,10 @@ app.whenReady().then(() => {
   createWindow()
 
   sendStatusToWindow(`Verificando atualizações... Versão atual: ${app.getVersion()}`)
-  autoUpdater.checkForUpdates()
 
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
-})
-
-// Eventos do autoUpdater
-autoUpdater.on('update-available', () => {
-  sendStatusToWindow(`Atualização disponível. Versão atual: ${app.getVersion()}`)
-  autoUpdater.downloadUpdate()
-})
-
-autoUpdater.on('update-not-available', () => {
-  sendStatusToWindow(`Nenhuma atualização disponível. Versão atual: ${app.getVersion()}`)
-})
-
-autoUpdater.on('update-downloaded', () => {
-  sendStatusToWindow(`Atualização baixada. Será instalada ao sair do app.`)
-})
-
-autoUpdater.on('error', (err) => {
-  sendStatusToWindow(`Erro no update: ${err == null ? 'desconhecido' : err.toString()}`)
 })
 
 app.on('window-all-closed', () => {

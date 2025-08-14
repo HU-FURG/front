@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { CalendarDays, Cog, House, LayoutDashboard } from 'lucide-react'
+import { CalendarDays, House, LayoutDashboard } from 'lucide-react'
 
 interface SidebarProps {
   isOpen: boolean
-  onNavigate: (page: 'scheduling' | 'rooms' | 'login' | 'dashboard') => void
+  onNavigate: (page: 'scheduling' | 'rooms' | 'dashboard') => void
 }
 
 function Sidebar({ isOpen, onNavigate }: SidebarProps): React.JSX.Element {
@@ -33,13 +33,6 @@ function Sidebar({ isOpen, onNavigate }: SidebarProps): React.JSX.Element {
           title="Dashboard"
         >
           <LayoutDashboard className="text-blue-500" />
-        </li>
-        <li
-          className="hover:bg-slate-200 p-3 cursor-pointer"
-          onClick={() => onNavigate('login')}
-          title="Login"
-        >
-          <Cog className="text-blue-500" />
         </li>
       </ul>
     </aside>

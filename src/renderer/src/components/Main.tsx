@@ -2,10 +2,9 @@
 import { ReactElement } from 'react'
 import Scheduling from '@renderer/routers/Scheduling'
 import Rooms from '@renderer/routers/Rooms'
-import Login from '@renderer/routers/Login'
 import Dashboard from '@renderer/routers/Dashboard'
 
-type Page = 'scheduling' | 'rooms' | 'login' | 'dashboard' | 'home'
+type Page = 'scheduling' | 'rooms' | 'dashboard' | 'home'
 
 interface MainProps {
   page: Page
@@ -19,8 +18,6 @@ function Main({ page }: MainProps): React.JSX.Element {
         return <Scheduling />
       case 'rooms':
         return <Rooms />
-      case 'login':
-        return <Login />
       case 'dashboard':
         return <Dashboard />
       default:
@@ -29,8 +26,7 @@ function Main({ page }: MainProps): React.JSX.Element {
   }
 
   return (
-    // <main className="flex-1 p-1 bg-gray-50 min-h-full flex">
-    <main className="flex-1 p-1 bg-black min-h-full flex">
+    <main className="flex-1 p-1 bg-gray-50 min-h-full flex">
       {/* Conteúdo principal */}
       <div className="flex-1 p-4">{renderPage()}</div>
     </main>
