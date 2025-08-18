@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect, useRef } from 'react'
-import Navbar from './components/Navbar'
 import Sidebar from './components/Sidebar'
 import Main from './components/Main'
 import Login from './routers/Login'
@@ -21,13 +20,12 @@ type Page = 'scheduling' | 'rooms' | 'dashboard' | 'home'
 
 function App(): React.JSX.Element {
   const [status, setStatus] = useState('')
-  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [page, setPage] = useState<Page>('home')
   const [login, setLogin] = useState(false)
   const [loading, setLoading] = useState(true)
   const hasCheckedUpdates = useRef(false)
 
-  // 1️⃣ Verifica token JWT ao montar
+  // Verifica token JWT ao montar
   useEffect(() => {
     const token = localStorage.getItem('token')
     if (token && isTokenValid(token)) {
@@ -39,7 +37,7 @@ function App(): React.JSX.Element {
     setLoading(false)
   }, [])
 
-  // 2️⃣ Loading e atualizações do Electron (só roda se token válido)
+  // Loading e atualizações do Electron
   useEffect(() => {
     if (!login || hasCheckedUpdates.current) return
 
@@ -69,7 +67,7 @@ function App(): React.JSX.Element {
     loadApp()
   }, [login])
 
-  // 3️⃣ Logout
+  // Logout
   const handleLogout = (): void => {
     localStorage.removeItem('token')
     setLogin(false)
@@ -96,36 +94,31 @@ function App(): React.JSX.Element {
   }
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="relative flex flex-col h-screen bg-gray-50">
+      {/* Status global */}
       {status && (
-        <div
-          style={{
-            marginTop: 20,
-            padding: 10,
-            background: '#222',
-            color: '#fff',
-            borderRadius: 5
-          }}
-        >
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 px-4 py-2 bg-black text-white rounded z-50">
           {status}
         </div>
       )}
 
       {login ? (
         <>
-          <Navbar
-            toggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-            handleLogout={handleLogout}
-          />
-          <div className="flex flex-1 bg-gray-50">
-            <Sidebar isOpen={sidebarOpen} onNavigate={setPage} />
+          {/* Fundo borrado quando a tela for maior que o conteúdo */}
+          <div className="absolute inset-0 z-0 bg-gray-400 backdrop-blur-sm"></div>
+
+          {/* Conteúdo centralizado */}
+          <div className="relative z-10 flex flex-1 max-w-[1400px] w-full mx-auto lg:my-4 shadow-lg overflow-hidden rounded-lg bg-[var(--background)]">
+            <Sidebar onNavigate={setPage} handleLogout={handleLogout} activePage={page} />
             <Main page={page} />
           </div>
         </>
       ) : (
         <>
-          <Login onLoginSuccess={() => setLogin(true)} />
-          <AppInfo />
+          <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
+            <Login onLoginSuccess={() => setLogin(true)} />
+            <AppInfo />
+          </div>
         </>
       )}
     </div>

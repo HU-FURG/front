@@ -8,6 +8,12 @@ export const api = axios.create({
     'Content-Type': 'application/json',
   },
 })
+// export const api = axios.create({
+//   baseURL: 'https://precious-reyna-hu-furg-b9ddc9e2.koyeb.app/api', // Substitua com sua URL real
+//   headers: {
+//     'Content-Type': 'application/json',
+//   },
+// })
 
 // Interceptor para adicionar o token automaticamente
 api.interceptors.request.use(

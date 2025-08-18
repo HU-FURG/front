@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
-import { join } from 'path'
+import path, { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { autoUpdater } from 'electron-updater'
 
@@ -19,6 +19,8 @@ function createWindow(): void {
   mainWindow = new BrowserWindow({
     width: 1000,
     height: 670,
+    icon: path.join(__dirname, '../../resources/icon.png'),
+    title: 'HU_FURG',
     minWidth: 1000,
     minHeight: 670,
     show: false,
@@ -29,6 +31,8 @@ function createWindow(): void {
       sandbox: false
     }
   })
+
+  mainWindow.setTitle('HU_FURG App')
 
   mainWindow.on('ready-to-show', () => {
     mainWindow?.show()
@@ -45,6 +49,8 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 }
+
+app.setName('HU_FURG App')
 
 ipcMain.handle('get-app-version', () => {
   return app.getVersion()

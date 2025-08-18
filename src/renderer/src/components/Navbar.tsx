@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable prettier/prettier */
 import { useState, useRef, useEffect } from 'react'
-import { AlignJustify, UsersRound } from 'lucide-react'
+import { UsersRound } from 'lucide-react'
 
 interface NavbarProps {
-  toggleSidebar: () => void
   handleLogout: () => void
 }
 
-function Navbar({ toggleSidebar, handleLogout }: NavbarProps): React.JSX.Element {
+function Navbar({ handleLogout }: NavbarProps): React.JSX.Element {
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
@@ -25,9 +24,7 @@ function Navbar({ toggleSidebar, handleLogout }: NavbarProps): React.JSX.Element
 
   return (
     <nav className="flex items-center justify-between px-6 py-2 bg-white text-black shadow-sm shadow-black-200 z-40 relative">
-      <button onClick={toggleSidebar} className="text-xl font-bold">
-        <AlignJustify />
-      </button>
+
 
       {/* User dropdown */}
       <div className="relative" ref={dropdownRef}>
