@@ -2,6 +2,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { CalendarDays, House, LayoutDashboard, UsersRound } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
+import logo from '../assets/logo.png';
+import AppInfo from './AppInfo';
 
 interface SidebarProps {
   handleLogout: () => void
@@ -34,20 +36,21 @@ function Sidebar({ handleLogout, onNavigate, activePage }: SidebarProps): React.
     <aside className="max-w-44 bg-[var(--sidebar)] border-[var(--sidebar-border)] w-48 h-full flex flex-col justify-between">
       {/* Logo */}
       <div>
-        <div className="p-6 border-b border-[var(--sidebar-border)]">
-          <h2 className="text-lg font-bold text-[var(--sidebar-foreground)] text-center">HU_FURG</h2>
+        <div className="p-3 border-b border-[var(--sidebar-border)]">
+          {/* <h2 className="text-lg font-bold text-[var(--sidebar-foreground)] text-center">HU_FURG</h2> */}
+          <img src={logo} className='h-[100px] mx-auto' alt="hu-furg" />
         </div>
 
         {/* Menu */}
         <ul className="w-full flex flex-col">
           <li className={getItemClass('scheduling')} onClick={() => onNavigate('scheduling')} title="Agendamento">
-            <CalendarDays className="mr-4" /> <span>Reservas</span>
+            <CalendarDays className="mr-2 w-[17px]" /> <span>Reservas</span>
           </li>
           <li className={getItemClass('rooms')} onClick={() => onNavigate('rooms')} title="Salas">
-            <House className="mr-4" /> <span>Salas</span>
+            <House className="mr-2 w-[17px]" /> <span>Salas</span>
           </li>
           <li className={getItemClass('dashboard')} onClick={() => onNavigate('dashboard')} title="Dashboard">
-            <LayoutDashboard className="mr-4" /> <span>Dashboard</span>
+            <LayoutDashboard className="mr-2 w-[17px]" /> <span>Dashboard</span>
           </li>
         </ul>
       </div>
@@ -58,9 +61,10 @@ function Sidebar({ handleLogout, onNavigate, activePage }: SidebarProps): React.
           onClick={() => setDropdownOpen(!dropdownOpen)}
           className="w-full flex justify-center items-center p-3 rounded hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-foreground)] transition"
         >
-          <UsersRound className="mr-2" />
+          <UsersRound className="mr-2 w-[17px]" />
           <span>Admin</span>
         </button>
+        <AppInfo/>
 
         {dropdownOpen && (
           <div className="absolute bottom-full right-0 mb-2 w-36 bg-[var(--card)] border border-[var(--sidebar-border)] rounded shadow-lg z-50">

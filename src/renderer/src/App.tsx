@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from 'react'
 import Sidebar from './components/Sidebar'
 import Main from './components/Main'
 import Login from './routers/Login'
-import AppInfo from './components/AppInfo'
 import { isTokenValid } from './utils/auth'
 
 declare global {
@@ -108,7 +107,7 @@ function App(): React.JSX.Element {
           <div className="absolute inset-0 z-0 bg-gray-400 backdrop-blur-sm"></div>
 
           {/* Conteúdo centralizado */}
-          <div className="relative z-10 flex flex-1 max-w-[1400px] w-full mx-auto lg:my-4 shadow-lg overflow-hidden rounded-lg bg-[var(--background)]">
+          <div className="relative z-10 flex flex-1 max-w-[1400px] w-full mx-auto lg:my-4 shadow-lg overflow-hidden bg-[var(--background)]">
             <Sidebar onNavigate={setPage} handleLogout={handleLogout} activePage={page} />
             <Main page={page} />
           </div>
@@ -117,7 +116,6 @@ function App(): React.JSX.Element {
         <>
           <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
             <Login onLoginSuccess={() => setLogin(true)} />
-            <AppInfo />
           </div>
         </>
       )}

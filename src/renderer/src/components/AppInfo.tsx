@@ -15,7 +15,7 @@ function AppInfo() {
     fetchVersion()
   }, [])
 
-  return <div className="text-sm text-gray-500">@vsrsio lamsa-furm - v{version}</div>
+  return <div className="text-[12px]  text-gray-500 text-center">@vsrsio FURG-HU - v{version}</div>
 }
 
 export default AppInfo
