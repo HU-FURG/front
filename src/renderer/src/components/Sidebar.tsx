@@ -7,8 +7,9 @@ import AppInfo from './AppInfo';
 
 interface SidebarProps {
   handleLogout: () => void
-  onNavigate: (page: 'scheduling' | 'rooms' | 'dashboard') => void
-  activePage: 'scheduling' | 'rooms' | 'dashboard' | 'home'
+  onNavigate: (page: 'scheduling' | 'rooms' | 'dashboard' | 'accounts') => void
+  activePage: 'scheduling' | 'rooms' | 'dashboard' | 'home' | 'accounts'
+
 }
 
 function Sidebar({ handleLogout, onNavigate, activePage }: SidebarProps): React.JSX.Element {
@@ -25,7 +26,7 @@ function Sidebar({ handleLogout, onNavigate, activePage }: SidebarProps): React.
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  const getItemClass = (pageName: 'scheduling' | 'rooms' | 'dashboard') =>
+  const getItemClass = (pageName: 'scheduling' | 'rooms' | 'dashboard'| 'accounts') =>
     `px-3 py-2 my-2 flex w-[80%] mx-auto cursor-pointer items-center  ${
       activePage === pageName
         ? 'bg-[var(--sidebar-accent)] text-[var(--sidebar-primary-foreground)]'
@@ -51,6 +52,9 @@ function Sidebar({ handleLogout, onNavigate, activePage }: SidebarProps): React.
           </li>
           <li className={getItemClass('dashboard')} onClick={() => onNavigate('dashboard')} title="Dashboard">
             <LayoutDashboard className="mr-2 w-[17px]" /> <span>Dashboard</span>
+          </li>
+          <li className={getItemClass('accounts')} onClick={() => onNavigate('accounts')} title="Dashboard">
+            <LayoutDashboard className="mr-2 w-[17px]" /> <span>G.Contas</span>
           </li>
         </ul>
       </div>

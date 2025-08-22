@@ -15,7 +15,8 @@ declare global {
   }
 }
 
-type Page = 'scheduling' | 'rooms' | 'dashboard' | 'home'
+type Page = 'scheduling' | 'rooms' | 'dashboard' | 'home' | 'accounts'
+
 
 function App(): React.JSX.Element {
   const [status, setStatus] = useState('')
@@ -66,9 +67,10 @@ function App(): React.JSX.Element {
     loadApp()
   }, [login])
 
+  
   // Logout
   const handleLogout = (): void => {
-    localStorage.removeItem('token')
+    // localStorage.removeItem('token')
     setLogin(false)
   }
 
@@ -107,7 +109,7 @@ function App(): React.JSX.Element {
           <div className="absolute inset-0 z-0 bg-gray-400 backdrop-blur-sm"></div>
 
           {/* Conteúdo centralizado */}
-          <div className="relative z-10 flex flex-1 max-w-[1400px] w-full mx-auto lg:my-4 shadow-lg overflow-hidden bg-[var(--background)]">
+          <div className="relative z-10 flex flex-1 max-w-[1400px] w-full mx-auto xl:my-4 shadow-lg overflow-hidden bg-[var(--background)]">
             <Sidebar onNavigate={setPage} handleLogout={handleLogout} activePage={page} />
             <Main page={page} />
           </div>

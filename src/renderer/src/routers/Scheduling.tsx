@@ -176,10 +176,10 @@ function Scheduling(): React.JSX.Element {
         <p>Nenhuma sala disponível ou busca feita.</p>
       </div>
       : 
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-2 p-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-6 gap-2 p-2">
         {salasPaginadas.map((sala) => (
-          <div key={sala.id} onClick={() => {setSalaSelecionada(sala); setShowBookingModal(true);}} className="border rounded-lg p-4 hover:shadow-md min-w-60 max-w-80 transition-shadow bg-white">
-            <div className="flex justify-between items-start mb-3" >
+          <div key={sala.id} onClick={() => {setSalaSelecionada(sala); setShowBookingModal(true);}} className="border rounded-lg p-4 hover:shadow-md min-w-40 max-w-60 transition-shadow bg-white">
+            <div className="flex justify-between items-start mb-1" >
               <div>
                 <h3 className="font-medium text-gray-800">{sala.nome}</h3>
                 <p className="text-sm text-gray-500">{sala.tipo}</p>

@@ -3,8 +3,9 @@ import { ReactElement } from 'react'
 import Scheduling from '@renderer/routers/Scheduling'
 import Rooms from '@renderer/routers/Rooms'
 import Dashboard from '@renderer/routers/Dashboard'
+import Accounts from '@renderer/routers/Account'
 
-type Page = 'scheduling' | 'rooms' | 'dashboard' | 'home'
+type Page = 'scheduling' | 'rooms' | 'dashboard' | 'home' | 'accounts'
 
 interface MainProps {
   page: Page
@@ -20,6 +21,8 @@ function Main({ page }: MainProps): React.JSX.Element {
         return <Rooms />
       case 'dashboard':
         return <Dashboard />
+      case 'accounts':
+        return <Accounts />
       default:
         return <div>Selecione uma opção no menu.</div>
     }

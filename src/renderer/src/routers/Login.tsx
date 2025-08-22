@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, { useState, useEffect } from 'react'
-import { handleLogin, LoginCredenciais } from '@renderer/services/UserRequests'
+import { handleLogin, LoginCredenciais, autoLogin } from '@renderer/services/UserRequests'
 import logo from '../assets/logo.png'
 import AppInfo from '@renderer/components/AppInfo'
 
@@ -14,15 +14,6 @@ function Login({ onLoginSuccess }: LoginProps): React.JSX.Element {
   const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState('')
 
-  // Ao carregar, verifica se já tem login salvo
-  useEffect(() => {
-    const savedLogin = localStorage.getItem('rememberedLogin')
-    if (savedLogin) {
-      setLogin(savedLogin)
-      setRememberMe(true)
-    }
-  }, [])
-
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
     setError('')
@@ -30,24 +21,35 @@ function Login({ onLoginSuccess }: LoginProps): React.JSX.Element {
     const credenciais: LoginCredenciais = {
       login,
       senha: password,
+      remember: rememberMe
     }
 
     try {
       await handleLogin(credenciais)
-
-      // Salva ou remove o login no localStorage dependendo do checkbox
-      if (rememberMe) {
-        localStorage.setItem('rememberedLogin', login)
-      } else {
-        localStorage.removeItem('rememberedLogin')
-      }
-
       onLoginSuccess()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.response?.data?.error || 'Email ou senha inválidos')
     }
   }
+  useEffect(() => {
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const tryAutoLogin = async () => {
+    const storedUser = localStorage.getItem('user'); 
+    if (!storedUser) return;
+    try {
+      const loggedIn = await autoLogin(); 
+      if (loggedIn) {
+        onLoginSuccess(); 
+      }
+    } catch (err) {
+      console.warn('Auto login falhou', err);
+      localStorage.removeItem('user'); 
+    }
+  };
+
+  tryAutoLogin();
+}, [onLoginSuccess]);
 
   return (
     <div className="flex flex-col w-full justify-center items-center h-screen bg-gray-100">
@@ -61,11 +63,6 @@ function Login({ onLoginSuccess }: LoginProps): React.JSX.Element {
           <p className="text-center text-gray-600">
             Digite suas credenciais para acessar o sistema
           </p>
-          {error && (
-            <div className="bg-red-100 text-red-700 p-2 mb-4 rounded text-center">
-              {error}
-            </div>
-          )}
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-600" htmlFor="email">
               Email
@@ -94,7 +91,13 @@ function Login({ onLoginSuccess }: LoginProps): React.JSX.Element {
               required
             />
           </div>
-          <div className="flex flex-col items-center justify-between text-sm space-y-2 mt-5">
+          {error? (
+            <div className="text-red-700 p-2 rounded text-center">
+              {error}
+            </div> 
+          ): <div className='p-4'></div>}
+          
+          <div className="flex flex-col items-center justify-between text-sm space-y-2">
             <button
               type="submit"
               className="w-full h-11 bg-emerald-400 rounded hover:bg-emerald-700 text-white font-medium transition"
