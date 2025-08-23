@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import Sidebar from './components/Sidebar'
 import Main from './components/Main'
 import Login from './routers/Login'
+import { handleLogout } from './services/UserRequests'
 import { isTokenValid } from './utils/auth'
 
 declare global {
@@ -67,12 +68,6 @@ function App(): React.JSX.Element {
     loadApp()
   }, [login])
 
-  
-  // Logout
-  const handleLogout = (): void => {
-    // localStorage.removeItem('token')
-    setLogin(false)
-  }
 
   if (loading) {
     return (
@@ -110,7 +105,7 @@ function App(): React.JSX.Element {
 
           {/* Conteúdo centralizado */}
           <div className="relative z-10 flex flex-1 max-w-[1400px] w-full mx-auto xl:my-4 shadow-lg overflow-hidden bg-[var(--background)]">
-            <Sidebar onNavigate={setPage} handleLogout={handleLogout} activePage={page} />
+            <Sidebar onNavigate={setPage} handleLogout={()=>handleLogout(setLogin)} activePage={page} />
             <Main page={page} />
           </div>
         </>

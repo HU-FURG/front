@@ -10,7 +10,7 @@ export type LoginCredenciais = {
 
 export type LoginResposta = {
   login: string
-  cargo: string
+  hierarquia: string
 }
 
 // Função para realizar login
@@ -22,7 +22,7 @@ export const handleLogin = async (
     console.log('Login realizado com sucesso:', response.data)
     
     localStorage.setItem('user', response.data.login)
-    localStorage.setItem('cargo', response.data.cargo)
+    localStorage.setItem('cargo', response.data.hierarquia)
     return response.data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
@@ -43,6 +43,22 @@ export const autoLogin = async (): Promise<boolean> => {
     return false;
   }
 };
+
+
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export const handleLogout = async (setLogin: (value: boolean) => void) => {
+  try {
+    await api.post('/logout');
+    setLogin(false)
+    localStorage.removeItem('user');
+    localStorage.removeItem('cargo');
+    console.log("Logout realizado");
+  } catch (err) {
+    console.error("Erro ao fazer logout:", err);
+  }
+};
+
+
 
 export const fetchUsers = async (): Promise<{login:string,hierarquia:string,lastLogin_at:Date}[]> => {
   const res = await api.get('/users')

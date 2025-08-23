@@ -4,10 +4,11 @@ import { Plus } from "lucide-react"
 import { fetchUsers, removeUser, createUser } from "@renderer/services/UserRequests"
 
 type UserRole = "admin" | "user"
-type User = { login: string; hierarquia: UserRole; lastLogin_at: string }
+type User = { login:string, hierarquia:string, lastLogin_at: Date }
+type client = {login:string | null, hierarquia:string | null}
 
 export default function Accounts(): React.JSX.Element {
-  const [currentUser] = useState<User>({ login: "luiz", hierarquia: "admin", lastLogin_at: new Date().toISOString() })
+  const [currentUser] = useState<client>({ login: localStorage.getItem('user'), hierarquia: localStorage.getItem('cargo')})
   const [users, setUsers] = useState<User[]>([])
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [showNewUserModal, setShowNewUserModal] = useState(false)
