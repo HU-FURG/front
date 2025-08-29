@@ -7,7 +7,7 @@ import AppInfo from './AppInfo';
 
 interface SidebarProps {
   handleLogout: () => void
-  onNavigate: (page: 'scheduling' | 'rooms' | 'dashboard' | 'accounts') => void
+  onNavigate: (page: 'scheduling' | 'rooms' | 'dashboard' | 'accounts' | 'home') => void
   activePage: 'scheduling' | 'rooms' | 'dashboard' | 'home' | 'accounts'
 
 }
@@ -26,7 +26,7 @@ function Sidebar({ handleLogout, onNavigate, activePage }: SidebarProps): React.
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  const getItemClass = (pageName: 'scheduling' | 'rooms' | 'dashboard'| 'accounts') =>
+  const getItemClass = (pageName: 'scheduling' | 'rooms' | 'dashboard'| 'accounts'| 'home') =>
     `px-3 py-2 my-2 flex w-[80%] mx-auto cursor-pointer items-center  ${
       activePage === pageName
         ? 'bg-[var(--sidebar-accent)] text-[var(--sidebar-primary-foreground)]'
@@ -44,6 +44,9 @@ function Sidebar({ handleLogout, onNavigate, activePage }: SidebarProps): React.
 
         {/* Menu */}
         <ul className="w-full flex flex-col">
+          <li className={getItemClass('home')} onClick={() => onNavigate('home')} title="Agendamento">
+            <CalendarDays className="mr-2 w-[17px]" /> <span>Home</span>
+          </li>
           <li className={getItemClass('scheduling')} onClick={() => onNavigate('scheduling')} title="Agendamento">
             <CalendarDays className="mr-2 w-[17px]" /> <span>Reservas</span>
           </li>

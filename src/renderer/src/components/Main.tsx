@@ -4,6 +4,7 @@ import Scheduling from '@renderer/routers/Scheduling'
 import Rooms from '@renderer/routers/Rooms'
 import Dashboard from '@renderer/routers/Dashboard'
 import Accounts from '@renderer/routers/Account'
+import Home from '@renderer/routers/Home'
 
 type Page = 'scheduling' | 'rooms' | 'dashboard' | 'home' | 'accounts'
 
@@ -17,6 +18,8 @@ function Main({ page }: MainProps): React.JSX.Element {
     switch (page) {
       case 'scheduling':
         return <Scheduling />
+      case 'home':
+        return <Home />
       case 'rooms':
         return <Rooms />
       case 'dashboard':
