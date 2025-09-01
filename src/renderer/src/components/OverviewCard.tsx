@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { OccupationResposta } from "@renderer/services/DashboardRequest";
 import { TrendingUp, Users, Clock } from "lucide-react";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from "recharts";
 
@@ -52,7 +53,7 @@ interface OverviewCardProps {
   totalSalas: number;
   ocupadas: number;
   tempoMedio: string;
-  weekData: { dia: string; ocupacao: number }[];
+  weekData: OccupationResposta[];
 }
 
 export function OverviewCard({
@@ -88,46 +89,49 @@ export function OverviewCard({
         
         </div>
 
-        {/* Gráfico */}
-        <div className="w-full mx-auto h-[300px] max-w-[800px] bg-card rounded-xl p-6 shadow transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
-          <h2 className="text-lg font-semibold text-gray-700 mb-2 text-center">
-            Percentual de Ocupação por Dia
-          </h2>
-          <ResponsiveContainer>
-            <LineChart
-              data={weekData}
-              margin={{ top: 20, right: 20, left: 0, bottom: 20 }}
-            >
-              <XAxis
-                dataKey="dia"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fontSize: 12, fill: "#6b7280" }}
-                dy={10}
-              />
-              <YAxis
-                domain={[0, 100]}
-                tickFormatter={(v) => `${v}%`}
-                axisLine={false}
-                tickLine={false}
-                tick={{ fontSize: 12, fill: "#6b7280" }}
-                width={40}
-              />
-              <Line
-                type="monotone"
-                dataKey="ocupacao"
-                stroke="#10b981"
-                strokeWidth={3}
-                dot={{ r: 4, fill: "#10b981", strokeWidth: 0 }}
-                activeDot={{
-                  r: 6,
-                  fill: "#10b981",
-                  strokeWidth: 2,
-                  stroke: "#fff",
-                }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+        {/* Gráfico ou Mensagem */}
+        <div className="w-full mx-auto h-[300px] max-w-[800px] bg-card rounded-xl p-6 shadow transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl flex items-center justify-center">
+          {weekData.length > 0 ? (
+            <ResponsiveContainer>
+              <LineChart
+                data={weekData}
+                margin={{ top: 20, right: 20, left: 0, bottom: 20 }}
+              >
+                <XAxis
+                  dataKey="dia"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12, fill: "#6b7280" }}
+                  dy={10}
+                />
+                <YAxis
+                  domain={[0, 100]}
+                  tickFormatter={(v) => `${v}%`}
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fontSize: 12, fill: "#6b7280" }}
+                  width={40}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="ocupacaoPercentual"
+                  stroke="#10b981"
+                  strokeWidth={3}
+                  dot={{ r: 4, fill: "#10b981", strokeWidth: 0 }}
+                  activeDot={{
+                    r: 6,
+                    fill: "#10b981",
+                    strokeWidth: 2,
+                    stroke: "#fff",
+                  }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <p className="text-gray-500 text-lg font-medium">
+              Nenhuma reserva nesta semana
+            </p>
+          )}
         </div>
       </div>
     </div>

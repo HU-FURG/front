@@ -66,6 +66,7 @@ function Rooms(): React.JSX.Element {
   useEffect(() => {
   setCurrentPage(1);
   handleSearch(1);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, tipoSelecionado, blocoSelecionado, activeFilter]);
 
   const filteredRooms = rooms.filter(room =>
@@ -88,8 +89,8 @@ function Rooms(): React.JSX.Element {
   return (
     <div className="flex-1 h-full overflow-y-hidden">
       {/* Campo de busca + botão */}
-      <div className="flex flex-wrap gap-4 bg-white border p-4 rounded  items-center">
-        <div className="flex items-center border-b-2 border-black-700 w-47 px-2">
+      <div className="flex flex-wrap gap-2 bg-white border py-4 px-2 rounded  items-center">
+        <div className="flex items-center border-b-2 border-black-700 w-36 px-2">
           <Search className="text-gray-500 mr-2" size={18} />
           <input
             type="text"

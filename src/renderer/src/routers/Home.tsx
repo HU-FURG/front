@@ -1,38 +1,68 @@
 /* eslint-disable prettier/prettier */
 import { OverviewCard } from "@renderer/components/OverviewCard";
 import { ReservasDeHoje } from "@renderer/components/RoomCarousel";
+import { fetchOccupation, fetchTempoMedioUso, OccupationResposta } from "@renderer/services/DashboardRequest";
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { useEffect, useState } from "react";
 
-// Mock data
-const mockWeekData = [
-  { dia: "Seg", ocupacao: 66 },
-  { dia: "Ter", ocupacao: 82 },
-  { dia: "Qua", ocupacao: 53 },
-  { dia: "Qui", ocupacao: 70 },
-  { dia: "Sex", ocupacao: 79 },
-  { dia: "Sáb", ocupacao: 38 },
-  { dia: "Dom", ocupacao: 25 },
-];
 
-// const mockReservadas: Room[] = [
-//   { id: 1, number: "101", bloco: "A", tipo: "Sala de Aula", active: true, description: "" },
-//   { id: 2, number: "202", bloco: "B", tipo: "Laboratório", active: true, description: "" },
-//   { id: 3, number: "303", bloco: "C", tipo: "Auditório", active: true, description: "" },
-//   { id: 4, number: "404", bloco: "D", tipo: "Reunião", active: true, description: "" },
-//   { id: 5, number: "505", bloco: "E", tipo: "Sala Especial", active: true, description: "" },
-// ];
 
 export default function Home(): React.JSX.Element {
-  // const [salasReservadas, setSalasReservadas] = useState<Room[]>([]);
-  const totalSalas = 20;
-  const ocupadas = 12;
-  const tempoMedio = "2h 15min";
+  //const [salasReservadas, setSalasReservadas] = useState<Room[]>([]);
+  const [totalSalas, SetTotalSalas] = useState<number>(0);
+  const [ocupadas, setOcupadas] = useState<number>(0);
+  const [tempoMedio, setTempoMedio] = useState<string>('');
+  const [mockWeekData, setMockWeekData] = useState<OccupationResposta[]>([])
 
-  // useEffect(() => {
-  //   // Simula chamada à API
-  //   setSalasReservadas(mockReservadas);
-  // }, []);
+  function getDate(semana: boolean): { inicio: string; fim: string } {
+    const hoje = new Date()
+    // Formatar como "YYYY-MM-DD"
+    const format = (d: Date):string => d.toISOString().split("T")[0]
+    let dia1, dia2;
+
+    if (semana) {
+      const diaSemana = hoje.getDay() // 0 = domingo, 1 = segunda, ..., 6 = sábado
+
+      // Ajusta para começar na segunda
+      const diffSegunda = diaSemana === 0 ? -6 : 1 - diaSemana
+      dia1 = new Date(hoje) //segunda
+      dia1.setDate(hoje.getDate() + diffSegunda)
+
+      // Domingo da mesma semana
+      dia2 = new Date(dia1) //domingo
+      dia2.setDate(dia1.getDate() + 6)
+    } else{
+      dia1 = new Date(hoje)
+      dia2 = new Date(hoje)
+    }
+  
+
+    return {
+      inicio: format(dia1),
+      fim: format(dia2),
+    }
+    
+  }
+
+  useEffect(() => {
+    const loadData = async ():Promise<void> => {
+      const periodo = getDate(true)
+      const hoje = getDate(false)
+
+      console.log(hoje)
+      const data = await fetchTempoMedioUso(hoje)
+      console.log(data)
+      setTempoMedio(data.tempoMedio)
+      setOcupadas(data.salasUsadas)
+      SetTotalSalas(data.totalSalas)
+
+      const data2 = await fetchOccupation(periodo)
+      setMockWeekData(data2)
+    }
+
+    loadData()
+  }, [])
 
   return (
     <div className="flex flex-col items-center mx-auto gap-4 sm:gap-1 sm:p-0 lg:gap-5 p-4 h-full overflow-y-scroll  max-w-[1000px]">
@@ -48,7 +78,7 @@ export default function Home(): React.JSX.Element {
         totalSalas={totalSalas}
         ocupadas={ocupadas}
         tempoMedio={tempoMedio}
-        weekData={mockWeekData}
+        weekData={mockWeekData || []}
       />
       <div className="flex w-full justify-center max-w-[800px] mb-6">
         <ReservasDeHoje  />
