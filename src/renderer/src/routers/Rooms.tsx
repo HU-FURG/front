@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 // icones
-import { Plus, Search, Tag, Building } from 'lucide-react'
+import { Plus} from 'lucide-react'
 // hooks
 import { useState, useEffect } from 'react'
 // Modal
@@ -11,6 +11,8 @@ import { tiposSala, blocosSala, Room } from '@renderer/types/RoomType'
 import  RoomCard  from '@renderer/components/RoomCard'
 // Api
 import { searchRooms, deleteRooms } from '@renderer/services/RoomRequests'
+import { SearchFilters } from '@renderer/components/searchFilters'
+import { Pagination } from '@renderer/components/Pagination'
 
 function Rooms(): React.JSX.Element {
   const [rooms, setRooms] = useState<Room[]>([])
@@ -89,65 +91,17 @@ function Rooms(): React.JSX.Element {
   return (
     <div className="flex-1 h-full overflow-y-hidden">
       {/* Campo de busca + botão */}
-      <div className="flex flex-wrap gap-2 bg-white border py-4 px-2 rounded  items-center">
-        <div className="flex items-center border-b-2 border-black-700 w-36 px-2">
-          <Search className="text-gray-500 mr-2" size={18} />
-          <input
-            type="text"
-            placeholder="Número Sala"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="p-1 outline-none w-full"
-          />
-        </div>
-
-        {/* Select do tipo da sala com ícone */}
-        <div className="flex items-center min-w-50 px-2">
-          <Tag className="text-gray-500 mr-2" size={18} />
-          <select
-            value={tipoSelecionado}
-            onChange={(e) => setTipoSelecionado(e.target.value)}
-            className="p-1 outline-none w-full bg-transparent"
-          >
-            <option value="">Tipo de Sala</option>
-            {tiposSala.map((sala, index) => (
-              <option key={index} value={sala}>
-                {sala}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Select do bloco com ícone */}
-        <div className="flex items-center w-50 px-2">
-          <Building className="text-gray-500 mr-2" size={18} />
-          <select
-            value={blocoSelecionado}
-            onChange={(e) => setBlocoSelecionado(e.target.value)}
-            className="p-1 outline-none w-full bg-transparent"
-          >
-            <option value="">Bloco da Sala</option>
-            {blocosSala.map((bloco, index) => (
-              <option key={index} value={bloco}>
-                {bloco}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="flex items-center w-30 px-2">
-          <label className="text-gray-700 mr-2 font-medium">Status:</label>
-          <select
-            value={activeFilter}
-            onChange={(e) => setActiveFilter(e.target.value as 'all' | 'active' | 'inactive')}
-            className="p-1 outline-none w-full bg-transparent"
-          >
-            <option value="all">Todos</option>
-            <option value="active">Ativas</option>
-            <option value="inactive">Inativas</option>
-          </select>
-        </div>
-      </div>
+      <SearchFilters
+        searchValue={search}
+        onSearchChange={setSearch}
+        tipoSelecionado={tipoSelecionado}
+        onTipoChange={setTipoSelecionado}
+        blocosSelecionado={blocoSelecionado}
+        onBlocoChange={setBlocoSelecionado}
+        activeFilter={activeFilter}
+        onActiveFilterChange={setActiveFilter}
+        showStatusFilter={true}
+      />
 
       {/* barra */}
       <div className="flex justify-between p-3 h-14 border-b-2 mb-10 ">
@@ -206,28 +160,14 @@ function Rooms(): React.JSX.Element {
       <RoomCard filteredRooms={filteredRooms} onSearch={() => handleSearch(currentPage)} salasSelecionadas={salasSelecionadas} toggleSelecaoSala={(room) => toggleSelecaoSala(room)} />
       
       {/* Paginação */}
-      <div className="flex justify-between items-center gap-4 mt-6 mb-8 mx-auto max-w-[1500px]">
-        <span className='text-sm text-gray-600 pl-5'>
-          Página {currentPage} de {totalPages} — Total: {totalItems} salas
-        </span>
-        <div className='flex gap-2 pr-5'>
-          <button
-            onClick={goToPreviousPage}
-            disabled={currentPage === 1}
-            className={`px-3 py-1 border rounded-lg ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:text-gray-600'}`}
-          >
-            <span>Anterior</span>
-          </button>
-          <button
-            onClick={goToNextPage}
-            disabled={currentPage === totalPages}
-            className={`px-3 py-1 border rounded-lg ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:text-gray-300'}`}
-          >
-            <span>Próximo</span>
-          </button>
-        </div>
-        
-      </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        onPrevious={goToPreviousPage}
+        onNext={goToNextPage}
+        label="salas"
+      />
 
       {/* Modal de Criação*/}
       <RoomModal

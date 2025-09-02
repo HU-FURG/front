@@ -5,8 +5,9 @@ import Rooms from '@renderer/routers/Rooms'
 import Dashboard from '@renderer/routers/Dashboard'
 import Accounts from '@renderer/routers/Account'
 import Home from '@renderer/routers/Home'
+import Reservations from '@renderer/routers/Reservations'
 
-type Page = 'scheduling' | 'rooms' | 'dashboard' | 'home' | 'accounts'
+type Page = 'scheduling' | 'rooms' | 'dashboard' | 'home' | 'accounts' | 'reservations'
 
 interface MainProps {
   page: Page
@@ -26,6 +27,8 @@ function Main({ page }: MainProps): React.JSX.Element {
         return <Dashboard />
       case 'accounts':
         return <Accounts />
+      case 'reservations':
+        return <Reservations />
       default:
         return <div>Selecione uma opção no menu.</div>
     }
@@ -33,7 +36,6 @@ function Main({ page }: MainProps): React.JSX.Element {
 
   return (
     <main className="flex-1 p-1 bg-gray-50 min-h-full flex">
-      {/* Conteúdo principal */}
       <div className="flex-1 p-4">{renderPage()}</div>
     </main>
   )

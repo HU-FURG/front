@@ -16,7 +16,7 @@ declare global {
   }
 }
 
-type Page = 'scheduling' | 'rooms' | 'dashboard' | 'home' | 'accounts'
+type Page = 'scheduling' | 'rooms' | 'dashboard' | 'home' | 'accounts' | 'reservations'
 
 
 function App(): React.JSX.Element {

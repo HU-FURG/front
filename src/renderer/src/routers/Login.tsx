@@ -12,6 +12,7 @@ function Login({ onLoginSuccess }: LoginProps): React.JSX.Element {
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
   const [rememberMe, setRememberMe] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
@@ -25,6 +26,7 @@ function Login({ onLoginSuccess }: LoginProps): React.JSX.Element {
     }
 
     try {
+      setLoading(true) 
       await handleLogin(credenciais)
       onLoginSuccess()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,6 +47,8 @@ function Login({ onLoginSuccess }: LoginProps): React.JSX.Element {
     } catch (err) {
       console.warn('Auto login falhou', err);
       localStorage.removeItem('user'); 
+    } finally {
+      setLoading(false)
     }
   };
 
@@ -100,7 +104,10 @@ function Login({ onLoginSuccess }: LoginProps): React.JSX.Element {
           <div className="flex flex-col items-center justify-between text-sm space-y-2">
             <button
               type="submit"
-              className="w-full h-11 bg-emerald-400 rounded hover:bg-emerald-700 text-white font-medium transition"
+              disabled={loading}
+              className={`w-full h-11 rounded text-white font-medium transition ${
+                loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-emerald-400 hover:bg-emerald-700'
+              }`}
             >
               Entrar
             </button>

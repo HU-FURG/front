@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 /* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { useState, useRef, useEffect } from 'react'
 import { UsersRound } from 'lucide-react'
 

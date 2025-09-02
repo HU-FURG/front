@@ -1,16 +1,16 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { CalendarDays, House, LayoutDashboard, UsersRound } from 'lucide-react'
+// Icones
+import { CalendarDays, ClipboardList, Home, Users, LayoutDashboard, Key, UsersRound } from "lucide-react"
+// React
 import { useState, useRef, useEffect } from 'react'
+// extra
 import logo from '../assets/logo.png';
 import AppInfo from './AppInfo';
+// Types
+import { SidebarProps } from '@renderer/types/InterfaceTypes';
+import { Page } from '@renderer/types/globalType';
 
-interface SidebarProps {
-  handleLogout: () => void
-  onNavigate: (page: 'scheduling' | 'rooms' | 'dashboard' | 'accounts' | 'home') => void
-  activePage: 'scheduling' | 'rooms' | 'dashboard' | 'home' | 'accounts'
-
-}
 
 function Sidebar({ handleLogout, onNavigate, activePage }: SidebarProps): React.JSX.Element {
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -26,7 +26,7 @@ function Sidebar({ handleLogout, onNavigate, activePage }: SidebarProps): React.
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  const getItemClass = (pageName: 'scheduling' | 'rooms' | 'dashboard'| 'accounts'| 'home') =>
+  const getItemClass = (pageName: Page) =>
     `px-3 py-2 my-2 flex w-[80%] mx-auto cursor-pointer items-center  ${
       activePage === pageName
         ? 'bg-[var(--sidebar-accent)] text-[var(--sidebar-primary-foreground)]'
@@ -38,26 +38,28 @@ function Sidebar({ handleLogout, onNavigate, activePage }: SidebarProps): React.
       {/* Logo */}
       <div>
         <div className="p-3 border-b border-[var(--sidebar-border)]">
-          {/* <h2 className="text-lg font-bold text-[var(--sidebar-foreground)] text-center">HU_FURG</h2> */}
           <img src={logo} className='h-[100px] mx-auto' alt="hu-furg" />
         </div>
 
         {/* Menu */}
         <ul className="w-full flex flex-col">
-          <li className={getItemClass('home')} onClick={() => onNavigate('home')} title="Agendamento">
-            <CalendarDays className="mr-2 w-[17px]" /> <span>Home</span>
+          <li className={getItemClass('home')} onClick={() => onNavigate('home')} title="Home">
+            <Home className="mr-2 w-[17px]" /> <span>Home</span>
           </li>
-          <li className={getItemClass('scheduling')} onClick={() => onNavigate('scheduling')} title="Agendamento">
-            <CalendarDays className="mr-2 w-[17px]" /> <span>Reservas</span>
+          <li className={getItemClass('scheduling')} onClick={() => onNavigate('scheduling')} title="Agendar">
+            <CalendarDays className="mr-2 w-[17px]" /> <span>Agendar</span>
+          </li>
+          <li className={getItemClass('reservations')} onClick={() => onNavigate('reservations')} title="Reservas">
+            <ClipboardList className="mr-2 w-[17px]" /> <span>Reservas</span>
           </li>
           <li className={getItemClass('rooms')} onClick={() => onNavigate('rooms')} title="Salas">
-            <House className="mr-2 w-[17px]" /> <span>Salas</span>
+            <Users className="mr-2 w-[17px]" /> <span>Salas</span>
           </li>
           <li className={getItemClass('dashboard')} onClick={() => onNavigate('dashboard')} title="Dashboard">
             <LayoutDashboard className="mr-2 w-[17px]" /> <span>Dashboard</span>
           </li>
-          <li className={getItemClass('accounts')} onClick={() => onNavigate('accounts')} title="Dashboard">
-            <LayoutDashboard className="mr-2 w-[17px]" /> <span>G.Contas</span>
+          <li className={getItemClass('accounts')} onClick={() => onNavigate('accounts')} title="Gerenciar Contas">
+            <Key className="mr-2 w-[17px]" /> <span>G.Contas</span>
           </li>
         </ul>
       </div>
