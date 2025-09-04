@@ -9,6 +9,16 @@ export interface Room {
   active: boolean
 }
 
+export type RoomPeriod = {
+  id: number
+  start: string
+  end: string
+  nome: string
+  isRecurring?: boolean
+  room: { id: number; number: string; bloco: string; tipo?: string }
+  user?: { id: number; login: string }
+}
+
 export const tiposSala: string[] = [
     "Comum",
     "Reunião",
