@@ -7,7 +7,6 @@ import { ptBR } from 'date-fns/locale';
 import { useEffect, useState } from "react";
 
 
-
 export default function Home(): React.JSX.Element {
   //const [salasReservadas, setSalasReservadas] = useState<Room[]>([]);
   const [totalSalas, SetTotalSalas] = useState<number>(0);
@@ -46,23 +45,23 @@ export default function Home(): React.JSX.Element {
   }
 
   useEffect(() => {
-    const loadData = async ():Promise<void> => {
-      const periodo = getDate(true)
-      const hoje = getDate(false)
+    const loadData = async (): Promise<void> => {
+      const periodo = getDate(true);
+      const hoje = getDate(false);
 
-      console.log(hoje)
-      const data = await fetchTempoMedioUso(hoje)
-      console.log(data)
-      setTempoMedio(data.tempoMedio)
-      setOcupadas(data.salasUsadas)
-      SetTotalSalas(data.totalSalas)
+      // tempo médio de uso
+      const data = await fetchTempoMedioUso(hoje);
+      setTempoMedio(data.tempoMedio);
+      setOcupadas(data.salasUsadas);
+      SetTotalSalas(data.totalSalas);
 
-      const data2 = await fetchOccupation(periodo)
-      setMockWeekData(data2)
-    }
+      // taxa de ocupação da semana
+      const occupationData = await fetchOccupation(periodo);
+      setMockWeekData(occupationData);
+    };
 
-    loadData()
-  }, [])
+    loadData();
+  }, []);
 
   return (
     <div className="flex flex-col items-center mx-auto gap-4 sm:gap-1 sm:p-0 lg:gap-5 p-4 h-full overflow-y-scroll  max-w-[1000px]">

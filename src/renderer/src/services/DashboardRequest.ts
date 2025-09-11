@@ -1,5 +1,9 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from './api'
+
+// variavel 
+export const OCCUPATION_CACHE_KEY = 'occupationCache';
 
 // Tipos esperados da API
 export type PeriodoRequest = {
@@ -22,15 +26,10 @@ export type TempoMedioResposta = {
 // ----------------------
 // TAXA DE OCUPAÇÃO
 // ----------------------
-export const fetchOccupation = async (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  periodo: any
-): Promise<OccupationResposta[]> => {
+export const fetchOccupation = async (periodo: PeriodoRequest): Promise<OccupationResposta[]> => {
   try {
     const res = await api.post<OccupationResposta[]>('/occupation', periodo)
-    console.log('Taxa de ocupação:', res.data)
     return res.data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error('Erro ao buscar taxa de ocupação:', error.response?.data || error.message)
     throw error
@@ -46,7 +45,6 @@ export const fetchTempoMedioUso = async (
   try {
     const res = await api.post<TempoMedioResposta>('/tempoMedio', periodo)
     return res.data
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error('Erro ao buscar tempo médio de uso:', error.response?.data || error.message)
     throw error

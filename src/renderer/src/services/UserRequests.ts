@@ -10,7 +10,7 @@ export type LoginCredenciais = {
 
 export type LoginResposta = {
   login: string
-  hierarquia: string
+  cargo: string
 }
 
 // Função para realizar login
@@ -22,7 +22,8 @@ export const handleLogin = async (
     console.log('Login realizado com sucesso:', response.data)
     
     localStorage.setItem('user', response.data.login)
-    localStorage.setItem('cargo', response.data.hierarquia)
+    localStorage.setItem('cargo', response.data.cargo)
+    console.log(response.data)
     return response.data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
@@ -31,14 +32,34 @@ export const handleLogin = async (
   }
 }
 
+// Função para login anônimo
+export const handleAnonymousLogin = async (): Promise<LoginResposta> => {
+  try {
+    const response = await api.post<LoginResposta>('/anonimo')
+    console.log('Login anônimo realizado com sucesso:', response.data)
+
+    localStorage.setItem('user', response.data.login)
+    localStorage.setItem('cargo', response.data.cargo)
+    return response.data
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    console.error('Erro ao fazer login anônimo:', error.response?.data || error.message)
+    throw error
+  }
+}
+
+
 export const autoLogin = async (): Promise<boolean> => {
   try {
     const res = await api.get('/validate-token'); 
     console.log('Login automático realizado com sucesso:', res.data);
     localStorage.setItem('user', res.data.login)
+    localStorage.setItem('cargo', res.data.cargo)
     return true;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
+    localStorage.removeItem('user');
+    localStorage.removeItem('cargo');
     console.warn('Sessão inválida ou expirada');
     return false;
   }

@@ -22,7 +22,7 @@ type Page = 'scheduling' | 'rooms' | 'dashboard' | 'home' | 'accounts' | 'reserv
 function App(): React.JSX.Element {
   const [status, setStatus] = useState('')
   const [page, setPage] = useState<Page>('home')
-  const [login, setLogin] = useState(false)
+  const [login, setLogin] = useState(true)
   const [loading, setLoading] = useState(true)
   const hasCheckedUpdates = useRef(false)
 

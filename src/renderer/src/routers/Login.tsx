@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import React, { useState, useEffect } from 'react'
-import { handleLogin, LoginCredenciais, autoLogin } from '@renderer/services/UserRequests'
+import { handleLogin, LoginCredenciais, autoLogin, handleAnonymousLogin } from '@renderer/services/UserRequests'
 import logo from '../assets/logo.png'
 import AppInfo from '@renderer/components/AppInfo'
 
@@ -32,8 +32,18 @@ function Login({ onLoginSuccess }: LoginProps): React.JSX.Element {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.response?.data?.error || 'Email ou senha inválidos')
+      setLoading(false) 
     }
   }
+
+  const handleAnonymous = async ():Promise<void> => {
+  try {
+    await handleAnonymousLogin()
+    onLoginSuccess()
+  } catch (err) {
+    console.error("Erro no login anônimo:", err)
+  }
+}
   useEffect(() => {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const tryAutoLogin = async () => {
@@ -77,7 +87,7 @@ function Login({ onLoginSuccess }: LoginProps): React.JSX.Element {
               className="w-full p-2 mb-6 border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-emerald-500"
               value={login}
               onChange={e => setLogin(e.target.value)}
-              placeholder="user@example.com"
+              placeholder="admin"
               required
             />
           </div>
@@ -120,6 +130,13 @@ function Login({ onLoginSuccess }: LoginProps): React.JSX.Element {
               />
               <span className="text-gray-600">Lembrar de mim</span>
             </label>
+            <button
+              type="button"
+              onClick={handleAnonymous}
+              className="text-emerald-600 hover:underline mt-2"
+            >
+              Entrar como anônimo
+            </button>
           </div>
         </form>
       </div>
