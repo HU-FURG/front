@@ -38,6 +38,11 @@ function createWindow(): void {
     mainWindow?.show()
   })
 
+  autoUpdater.on('download-progress', (progress) => {
+    const percent = Math.round(progress.percent)
+    mainWindow?.webContents.send('update-message', `Baixando atualização... ${percent}%`)
+  })
+
   mainWindow.webContents.setWindowOpenHandler((details) => {
     shell.openExternal(details.url)
     return { action: 'deny' }
@@ -60,6 +65,7 @@ ipcMain.handle('check-for-updates', () => {
   return new Promise<void>((resolve, reject) => {
     function cleanup() {
       autoUpdater.removeListener('error', onError)
+      autoUpdater.removeListener('update-available', onUpdateAvailable)
       autoUpdater.removeListener('update-not-available', onUpdateNotAvailable)
       autoUpdater.removeListener('update-downloaded', onUpdateDownloaded)
     }
@@ -70,6 +76,11 @@ ipcMain.handle('check-for-updates', () => {
       reject(err)
     }
 
+    function onUpdateAvailable() {
+      mainWindow?.webContents.send('update-message', 'Update disponível! Iniciando download...')
+      autoUpdater.downloadUpdate() // aqui começa o download
+    }
+
     function onUpdateNotAvailable() {
       cleanup()
       sendStatusToWindow(`Nenhuma atualização disponível. Versão atual: ${app.getVersion()}`)
@@ -78,11 +89,12 @@ ipcMain.handle('check-for-updates', () => {
 
     function onUpdateDownloaded() {
       cleanup()
-      sendStatusToWindow(`Atualização baixada. Será instalada ao sair do app.`)
-      resolve()
+      sendStatusToWindow(`Atualização baixada. Instalando agora ...`)
+      autoUpdater.quitAndInstall()
     }
 
     autoUpdater.once('error', onError)
+    autoUpdater.once('update-available', onUpdateAvailable)
     autoUpdater.once('update-not-available', onUpdateNotAvailable)
     autoUpdater.once('update-downloaded', onUpdateDownloaded)
 
