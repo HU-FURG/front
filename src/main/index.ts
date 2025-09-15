@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { app, shell, BrowserWindow, ipcMain } from 'electron'
-import path, { join } from 'path'
+import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { autoUpdater } from 'electron-updater'
 
 let mainWindow: BrowserWindow | null = null
+
+// lista de hosts permitidos (apenas esses terão certificados aceitos)
+const ALLOWED_HOSTS = ['precious-reyna-hu-furg-b9ddc9e2.koyeb.app']
 
 autoUpdater.autoDownload = false
 autoUpdater.autoInstallOnAppQuit = true
@@ -19,19 +22,19 @@ function createWindow(): void {
   mainWindow = new BrowserWindow({
     width: 1000,
     height: 670,
-    icon: path.join(__dirname, '../../resources/icon.png'),
+    icon: join(__dirname, '../../resources/icon.png'),
     title: 'HU_FURG',
     minWidth: 1000,
     minHeight: 670,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? {} : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
     }
   })
 
+  mainWindow.loadURL('https://precious-reyna-hu-furg-b9ddc9e2.koyeb.app/')
   mainWindow.setTitle('HU_FURG App')
 
   mainWindow.on('ready-to-show', () => {
@@ -57,6 +60,24 @@ function createWindow(): void {
 
 app.setName('HU_FURG App')
 
+// intercepta erros de certificado
+app.on('certificate-error', (event, _webContents, url, _error, _certificate, callback) => {
+  try {
+    const { hostname } = new URL(url)
+    if (ALLOWED_HOSTS.includes(hostname)) {
+      event.preventDefault()
+      callback(true) // aceita só para o host da lista
+      console.log(`✅ Certificado aceito para: ${hostname}`)
+      return
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (e) {
+    // se URL inválida -> não confiar
+  }
+  console.warn(`❌ Certificado rejeitado para: ${url}`)
+  callback(false)
+})
+
 ipcMain.handle('get-app-version', () => {
   return app.getVersion()
 })
@@ -78,7 +99,7 @@ ipcMain.handle('check-for-updates', () => {
 
     function onUpdateAvailable() {
       mainWindow?.webContents.send('update-message', 'Update disponível! Iniciando download...')
-      autoUpdater.downloadUpdate() // aqui começa o download
+      autoUpdater.downloadUpdate()
     }
 
     function onUpdateNotAvailable() {

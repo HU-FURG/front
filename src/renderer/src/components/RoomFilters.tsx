@@ -1,12 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { Search, Tag, Building } from "lucide-react"
 import { tiposSala, blocosSala } from '@renderer/types/RoomType'
+
 type ActiveFilter = "all" | "active" | "inactive"
 
 interface SearchFiltersProps {
-  searchValue?: string
-  onSearchChange?: (value: string) => void
-
   tipoSelecionado: string
   onTipoChange: (value: string) => void
   blocosSelecionado: string
@@ -16,12 +13,11 @@ interface SearchFiltersProps {
   onActiveFilterChange?: (value: ActiveFilter) => void
 
   showStatusFilter?: boolean
+  setIsfilter: (boolean) => void
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SearchFilters({
-  searchValue,
-  onSearchChange,
+export function RoomFilters({
   tipoSelecionado,
   onTipoChange,
   blocosSelecionado,
@@ -29,28 +25,19 @@ export function SearchFilters({
   activeFilter = "all",
   onActiveFilterChange,
   showStatusFilter = false,
+  setIsfilter
 }: SearchFiltersProps) {
   return (
-    <div className="flex flex-wrap gap-2 bg-white border py-4 px-2 rounded items-center">
-      {/* Campo de busca */}
-      {onSearchChange && <div className="flex items-center border-b-2 border-black-700 w-36 px-2">
-        <Search className="text-gray-500 mr-2" size={18} />
-        <input
-          type="text"
-          placeholder="Buscar"
-          value={searchValue}
-          onChange={(e) => onSearchChange(e.target.value)}
-          className="p-1 outline-none w-full"
-        />
-      </div>}
+    <div className="flex flex-col gap-3 bg-white py-5 px-4 rounded-lg shadow-md w-full max-w-sm">
+      <h2 className="text-center text-gray-800 font-semibold text-lg mb-2">Filtros</h2>
 
       {/* Tipo de sala */}
-      <div className="flex items-center min-w-50 px-2">
-        <Tag className="text-gray-500 mr-2" size={18} />
+      <div className="flex items-center w-full">
+        
         <select
           value={tipoSelecionado}
           onChange={(e) => onTipoChange(e.target.value)}
-          className="p-1 outline-none w-full bg-transparent"
+          className="flex-1 p-2 border border-gray-300 rounded-md bg-white text-gray-700 outline-none focus:ring-1 focus:ring-emerald-700 transition"
         >
           <option value="">Tipo de Sala</option>
           {tiposSala.map((tipo, i) => (
@@ -62,12 +49,12 @@ export function SearchFilters({
       </div>
 
       {/* Bloco */}
-      <div className="flex items-center w-50 px-2">
-        <Building className="text-gray-500 mr-2" size={18} />
+      <div className="flex items-center w-full">
+        
         <select
           value={blocosSelecionado}
           onChange={(e) => onBlocoChange(e.target.value)}
-          className="p-1 outline-none w-full bg-transparent"
+          className="flex-1 p-2 border border-gray-300 rounded-md bg-white text-gray-700 outline-none focus:ring-1 focus:ring-emerald-700 transition"
         >
           <option value="">Bloco da Sala</option>
           {blocosSala.map((bloco, i) => (
@@ -80,21 +67,40 @@ export function SearchFilters({
 
       {/* Filtro de status (opcional) */}
       {showStatusFilter && onActiveFilterChange && (
-        <div className="flex items-center w-30 px-2">
-          <label className="text-gray-700 mr-2 font-medium">Status:</label>
+        <div className="flex items-center w-full">
+          
           <select
             value={activeFilter}
-            onChange={(e) =>
-              onActiveFilterChange(e.target.value as ActiveFilter)
-            }
-            className="p-1 outline-none w-full bg-transparent"
+            onChange={(e) => onActiveFilterChange(e.target.value as ActiveFilter)}
+            className="flex-1 p-2 border border-gray-300 rounded-md bg-white text-gray-700 outline-none focus:ring-1 focus:ring-emerald-700 transition"
           >
-            <option value="all">Todos</option>
+            <option value="all">Status</option>
             <option value="active">Ativas</option>
             <option value="inactive">Inativas</option>
           </select>
         </div>
       )}
+
+      {/* Botão Limpar */}
+      <button
+        onClick={() => {
+          onTipoChange("")
+          onBlocoChange("")
+          onActiveFilterChange?.("all")
+        }}
+        className="w-full mt-3 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-md transition-colors"
+      >
+        Limpar Filtros
+      </button>
+
+      <div className="flex justify-end">
+        <button
+          onClick={() => setIsfilter(false)}
+          className="w-full px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm"
+        >
+          Fechar
+        </button>
+      </div>
     </div>
   )
 }

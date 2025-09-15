@@ -1,6 +1,9 @@
 /* eslint-disable prettier/prettier */
-import { X, Edit3 } from "lucide-react"
+"use client"
+
 import React, { useState, useEffect } from "react"
+import { X, Edit3, Trash2 } from "lucide-react"
+import { Room } from "@renderer/types/RoomType"
 
 interface RoomEditModalProps {
   isOpen: boolean
@@ -14,14 +17,8 @@ interface RoomEditModalProps {
     active: boolean
   }) => void
   tiposSala: string[]
-  salaData: {
-    id: number          
-    number: string
-    description: string
-    tipo: string
-    bloco: string
-    active: boolean 
-  } | null
+  salaData: Room | null
+  deleteRoom: (room: Room) => Promise<void>
 }
 
 export const RoomEditModal: React.FC<RoomEditModalProps> = ({
@@ -30,104 +27,142 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
   onSave,
   tiposSala,
   salaData,
+  deleteRoom,
 }) => {
-  const [id, setId] = useState<number | null>(null)
-  const [number, setNumber] = useState("")
-  const [bloco, setBloco] = useState("")
-  const [description, setDescription] = useState("")
-  const [tipoSelecionado, setTipoSelecionado] = useState("")
-  const [active, setActive] = useState(true)
+  const [formData, setFormData] = useState({
+    id: 0,
+    number: "",
+    description: "",
+    tipo: "",
+    bloco: "",
+    active: true,
+  })
 
   useEffect(() => {
     if (salaData) {
-      setId(salaData.id)
-      setNumber(salaData.number)
-      setBloco(salaData.bloco)
-      setDescription(salaData.description)
-      setTipoSelecionado(salaData.tipo)
-      setActive(salaData.active)
+      setFormData({
+        id: salaData.id ?? 0,
+        number: salaData.number,
+        description: salaData.description,
+        tipo: salaData.tipo,
+        bloco: salaData.bloco,
+        active: salaData.active,
+      })
     }
   }, [salaData])
 
   if (!isOpen || !salaData) return null
 
-  const handleSave = (): void => {
-    if (id === null) return
+  const handleSubmit = (e: React.FormEvent):void => {
+    e.preventDefault()
+    if (!formData.id) return
+    onSave(formData)
+  }
 
-    onSave({
-      id,
-      number,
-      bloco,
-      description,
-      tipo: tipoSelecionado,
-      active,
-    })
+  const handleDelete = async ():Promise<void> => {
+    if (!salaData) return
+    await deleteRoom(salaData)
+    onClose()
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-black/60 to-black/80">
-      <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 animate-fade-in">
-        {/* Botão fechar */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-red-500 transition-colors"
-        >
-          <X size={20} />
-        </button>
-
-        {/* Ícone topo */}
-        <div className="flex justify-center mb-4">
-          <div className="p-4 bg-gradient-to-b from-white to-gray-200 rounded-full shadow-lg border border-gray-300">
-            <Edit3 className="text-green-600" size={32} />
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center">
+              <Edit3 className="w-5 h-5 text-white" />
+            </div>
+            <h2 className="text-xl font-semibold text-gray-900">
+              Editar Sala {formData.number}
+            </h2>
           </div>
-        </div>
-
-        {/* Cabeçalho com número e bloco */}
-        <div className="text-center mb-6">
-          <h2 className="text-lg font-semibold text-gray-700">
-            Sala <span className="text-green-600">{number}</span> / Bloco <span className="text-green-600">{bloco}</span>
-          </h2>
-        </div>
-
-        {/* Campos editáveis */}
-        <div className="space-y-4">
-          <input
-            type="text"
-            placeholder="Descrição"
-            value={description}
-            onChange={e => setDescription(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition"
-          />
-
-          <select
-            value={tipoSelecionado}
-            onChange={(e) => setTipoSelecionado(e.target.value)}
-            className="w-full p-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+          <button
+            onClick={onClose}
+            
+            className="p-2 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50"
           >
-            <option value="">Tipo de Sala</option>
-            {tiposSala.map((tipo, index) => (
-              <option key={index} value={tipo}>{tipo}</option>
-            ))}
-          </select>
-
-           <label className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              checked={active}
-              onChange={e => setActive(e.target.checked)}
-              className="w-5 h-5"
-            />
-            <span className="text-gray-700">Sala ativa</span>
-          </label>
+            <X className="w-5 h-5 text-gray-500" />
+          </button>
         </div>
 
-        {/* Botão salvar */}
-        <button
-          onClick={handleSave}
-          className="mt-6 w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition duration-200 shadow-md"
-        >
-          Salvar Alterações
-        </button>
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Descrição</label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 resize-none"
+              rows={3}
+              
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Tipo da Sala</label>
+            <select
+              value={formData.tipo}
+              onChange={(e) => setFormData({ ...formData, tipo: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+              
+            >
+              <option value="">Selecione o tipo</option>
+              {tiposSala.map((tipo) => (
+                <option key={tipo} value={tipo}>
+                  {tipo}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <label htmlFor="active" className="text-sm font-medium text-gray-700">
+              Sala ativa
+            </label>
+
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                id="active"
+                checked={formData.active}
+                onChange={(e) => setFormData({ ...formData, active: e.target.checked })}
+                className="sr-only peer"
+                
+              />
+              <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-emerald-600 transition-colors"></div>
+              <div className="absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform peer-checked:translate-x-5"></div>
+            </label>
+          </div>
+
+          {/* Ações */}
+          <div className="flex gap-3 pt-4">
+            <button
+              type="button"
+              onClick={handleDelete}
+              
+              className="flex-1 px-4 py-2 flex items-center justify-center gap-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50"
+            >
+              <Trash2 className="w-4 h-4" /> Deletar
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              
+              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              
+              className="flex-1 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Salvar
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   )

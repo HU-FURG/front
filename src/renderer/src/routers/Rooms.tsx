@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 // icones
-import { Plus} from 'lucide-react'
+import { Building2, Plus} from 'lucide-react'
 // hooks
 import { useState, useEffect } from 'react'
 // Modal
@@ -11,8 +11,8 @@ import { tiposSala, blocosSala, Room } from '@renderer/types/RoomType'
 import  RoomCard  from '@renderer/components/RoomCard'
 // Api
 import { searchRooms, deleteRooms } from '@renderer/services/RoomRequests'
-import { SearchFilters } from '@renderer/components/searchFilters'
 import { Pagination } from '@renderer/components/Pagination'
+import { RoomFilters } from '@renderer/components/RoomFilters'
 
 function Rooms(): React.JSX.Element {
   const [rooms, setRooms] = useState<Room[]>([])
@@ -20,6 +20,8 @@ function Rooms(): React.JSX.Element {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [activeFilter, setActiveFilter] = useState<'all' | 'active' | 'inactive'>('all');
 
+  // Filtro
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   // Especificidades
   const [tipoSelecionado, setTipoSelecionado] = useState<string>("");
@@ -89,22 +91,32 @@ function Rooms(): React.JSX.Element {
   }
 
   return (
-    <div className="flex-1 h-full overflow-y-hidden">
-      {/* Campo de busca + botão */}
-      <SearchFilters
-        searchValue={search}
-        onSearchChange={setSearch}
-        tipoSelecionado={tipoSelecionado}
-        onTipoChange={setTipoSelecionado}
-        blocosSelecionado={blocoSelecionado}
-        onBlocoChange={setBlocoSelecionado}
-        activeFilter={activeFilter}
-        onActiveFilterChange={setActiveFilter}
-        showStatusFilter={true}
-      />
+    <div className="flex-1 h-full overflow-y-hidden relative">
+      <header className="bg-card border-b border-border sticky top-0 z-40">
+        <div className="flex items-center justify-between px-6 py-3">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                <Building2 className="w-6 h-6 text-primary-foreground" />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-foreground">Gerenciamento de Salas</h1>
+                <p className="text-sm text-muted-foreground">HU_FURG - Sistema de Gestão</p>
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-primary-foreground px-4 py-2 rounded-lg font-medium transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Nova Sala
+          </button>
+        </div>
+      </header>
 
       {/* barra */}
-      <div className="flex justify-between p-3 h-14 border-b-2 mb-10 ">
+       <div className="flex justify-end p-3 mb-0 pb-0">
         <div className="flex items-center gap-3">
           <span className="text-sm font-medium">
             {salasSelecionadas.length} sala(s) selecionada(s)
@@ -147,17 +159,37 @@ function Rooms(): React.JSX.Element {
             Excluir selecionadas
           </button>
         </div>
-
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="text-sm flex items-center bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700"
-        >
-          <Plus className="mr-2" size={15} /> Nova Sala
-        </button>
+      </div> 
+ 
+      {/* Campo de busca + botão */}
+      <div className="relative">
+      {isFilterOpen && (
+        <div className="absolute  top-0 right-0 h-full min-h-[300px] w-72 bg-white shadow-2xl z-50 animate-slideLeft">
+          <RoomFilters
+            tipoSelecionado={tipoSelecionado}
+            onTipoChange={setTipoSelecionado}
+            blocosSelecionado={blocoSelecionado}
+            onBlocoChange={setBlocoSelecionado}
+            activeFilter={activeFilter}
+            onActiveFilterChange={setActiveFilter}
+            showStatusFilter={true}
+            setIsfilter={setIsFilterOpen}
+          />
+        </div>
+      )}
       </div>
 
       {/* Grid de salas */}
-      <RoomCard filteredRooms={filteredRooms} onSearch={() => handleSearch(currentPage)} salasSelecionadas={salasSelecionadas} toggleSelecaoSala={(room) => toggleSelecaoSala(room)} />
+      <RoomCard
+        filteredRooms={filteredRooms}
+        onSearch={() => handleSearch(currentPage)}
+        onSearchChange={setSearch}
+        searchValue = {search}
+        salasSelecionadas={salasSelecionadas}
+        toggleSelecaoSala={(room) => toggleSelecaoSala(room)}
+        onToggleFilter={() => setIsFilterOpen(!isFilterOpen)}
+      />
+
       
       {/* Paginação */}
       <Pagination
