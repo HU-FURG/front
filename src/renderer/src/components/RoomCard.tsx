@@ -80,9 +80,9 @@ const RoomCard = ({searchValue, onSearchChange, filteredRooms, onSearch, salasSe
   }
 
   return (
-    <div className="bg-white  mx-auto max-w-[1500px] min-h-[60%]  scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 ">
+    <div className="bg-white  mx-auto max-w-[1500px] rounded-xl mt-2 p-2 border border-gray-200 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 ">
       {/* Barra de ações */}
-      <div className="flex justify-between w-full items-center p-3 mt-2 ">
+      <div className="flex justify-between w-full items-center p-3">
         {/* Pesquisa */}
         <div className="relative">
           <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
@@ -152,7 +152,7 @@ const RoomCard = ({searchValue, onSearchChange, filteredRooms, onSearch, salasSe
                 </span>
               </td>
               <td className="px-4 py-3 text-center">
-                <span className={`text-xs font-medium px-2 py-1 rounded-full ${room.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                <span className={`text-xs font-medium px-2 py-1 rounded-full ${room.active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-500'}`}>
                   {room.active ? 'Ativa' : 'Inativa'}
                 </span>
               </td>

@@ -35,8 +35,8 @@ function Main({ page }: MainProps): React.JSX.Element {
   }
 
   return (
-    <main className="flex-1 p-1 bg-gray-50 min-h-full flex">
-      <div className="flex-1 p-4">{renderPage()}</div>
+    <main className="flex-1 bg-gray-50 min-h-full flex justify-center">
+      <div className="flex-1 p-4 max-w-[1270px]">{renderPage()}</div>
     </main>
   )
 }

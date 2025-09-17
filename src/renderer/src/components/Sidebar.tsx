@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 // Icones
-import { CalendarDays, ClipboardList, Home, Users, LayoutDashboard, Key, UsersRound } from "lucide-react"
+import { CalendarDays, ClipboardList, Home, Users, LayoutDashboard, Key, UsersRound, LogOut, ChevronRight } from "lucide-react"
 // React
 import { useState, useRef, useEffect } from 'react'
 // extra
@@ -27,17 +27,17 @@ function Sidebar({ handleLogout, onNavigate, activePage }: SidebarProps): React.
   }, [])
 
   const getItemClass = (pageName: Page) =>
-    `px-3 py-2 my-2 flex w-[80%] mx-auto cursor-pointer items-center  ${
+    `px-3 py-2 my-2 flex w-[95%] mx-auto cursor-pointer items-center  ${
       activePage === pageName
-        ? 'bg-[var(--sidebar-accent)] text-[var(--sidebar-primary-foreground)]'
-        : 'hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-foreground)] text-[var(--sidebar-foreground)]'
+        ? 'bg-gray-300 text-black'
+        : 'hover:bg-gray-200 hover:-gray-50 text-black'
     }`
 
   return (
-    <aside className="max-w-44 bg-[var(--sidebar)] border-[var(--sidebar-border)] w-48 h-full flex flex-col justify-between">
+    <aside className="max-w-44 bg-gray-100 border-r border-gray-200 w-48 h-full flex flex-col justify-between">
       {/* Logo */}
       <div>
-        <div className="p-3 border-b border-[var(--sidebar-border)]">
+        <div className="p-3">
           <img src={logo} className='h-[100px] mx-auto' alt="hu-furg" />
         </div>
 
@@ -65,26 +65,31 @@ function Sidebar({ handleLogout, onNavigate, activePage }: SidebarProps): React.
       </div>
 
       {/* User dropdown */}
-      <div className="relative border-t border-[var(--sidebar-border)] text-[var(--sidebar-foreground)]" ref={dropdownRef}>
-        <button
-          onClick={() => setDropdownOpen(!dropdownOpen)}
-          className="w-full flex justify-center items-center p-3 rounded hover:bg-[var(--sidebar-accent)] hover:text-[var(--sidebar-foreground)] transition"
-        >
-          <UsersRound className="mr-2 w-[17px]" />
-          <span>Admin</span>
-        </button>
+      <div className="relative text-black" ref={dropdownRef} onMouseLeave={() => setDropdownOpen(!dropdownOpen)}>
+        <div className="border border-gray-200 bg-white relative m-2 rounded" >
+          <button
+            onMouseEnter={() => setDropdownOpen(!dropdownOpen)}
+            
+            className="w-full flex justify-center items-center p-2 rounded hover:bg-gray-200 hover:text-gray-600 transition"
+          >
+            <UsersRound className="mr-2 w-[16px]" />
+            <span>Admin</span>
+            <ChevronRight className="text-gray-500 ml-8 w-4"/>
+          </button>
+          {dropdownOpen && (
+            <div 
+            className="absolute left-full top-0 mb-2 ml-2 w-32 rounded bg-[var(--card)] border border-gray-200 shadow-lg z-50">
+              <button
+                onClick={handleLogout}
+                className="flex justify-around w-full text-left px-3 py-2 hover:bg-gray-100 transition rounded"
+              >
+                <LogOut/>
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
         <AppInfo/>
-
-        {dropdownOpen && (
-          <div className="absolute bottom-full right-0 mb-2 w-36 bg-[var(--card)] border border-[var(--sidebar-border)] rounded shadow-lg z-50">
-            <button
-              onClick={handleLogout}
-              className="w-full text-left px-3 py-2 hover:bg-red-500 hover:text-white transition rounded"
-            >
-              Logout
-            </button>
-          </div>
-        )}
       </div>
     </aside>
   )

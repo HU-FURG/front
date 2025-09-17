@@ -76,12 +76,16 @@ useEffect(() => {
     window.electronAPI.onUpdateMessage((msg) => {
       setStatus(msg)
       if (msg.toLowerCase().includes("baixando")) {
-        // Extrai o número da mensagem, ex: "Baixando atualização... 35%"
         const match = msg.match(/(\d+)%/)
         if (match) setDownloadProgress(Number(match[1]))
       } else if (msg.toLowerCase().includes("baixada")) {
         setDownloadProgress(100)
         setUpdateDownloaded(true)
+        // Aqui você pode "sumir" com a barra de progresso ou o status
+        setTimeout(() => {
+          setStatus('')               // limpa a mensagem
+          setDownloadProgress(0)      // reseta o progresso
+        }, 2000)
       }
     })
   }, [])
@@ -90,7 +94,7 @@ useEffect(() => {
 
   // 3. Só depois do update validar token
   useEffect(() => {
-    if (!isReady) return
+    if (!isReady) return // Garantir a espera
     const token = localStorage.getItem('token')
     if (token && isTokenValid(token)) {
       setLogin(true)
@@ -155,14 +159,13 @@ useEffect(() => {
 
       {login ? (
         <>
-          <div className="absolute inset-0 z-0 bg-gray-400 backdrop-blur-sm"></div>
-          <div className="relative z-10 flex flex-1 max-w-[1400px] w-full mx-auto xl:my-4 shadow-lg overflow-hidden bg-[var(--background)]">
+          <div className="flex flex-1 w-full shadow-lg overflow-hidden bg-gray-200 min-h-screen">
             <Sidebar onNavigate={setPage} handleLogout={()=>handleLogout(setLogin)} activePage={page} />
             <Main page={page} />
           </div>
         </>
       ) : (
-        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
+        <div className="relative z-10 flex flex-col items-center justify-center ">
           <Login onLoginSuccess={() => setLogin(true)} />
         </div>
       )}

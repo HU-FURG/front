@@ -154,7 +154,7 @@ function Rooms(): React.JSX.Element {
               }
             }}
             disabled={salasSelecionadas.length === 0}
-            className={`text-sm px-3 py-1 rounded text-white bg-red-600 hover:bg-red-700 transition ${salasSelecionadas.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`text-sm px-3 py-1 rounded bg-gray-400 hover:bg-gray-600 transition ${salasSelecionadas.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             Excluir selecionadas
           </button>
